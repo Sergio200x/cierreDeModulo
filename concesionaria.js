@@ -1,11 +1,6 @@
 let autos = require("./autos")/* requerir módulo autos */
 
-const personas =
-{
-    nombre: "Juan",
-    capacidadDePagoEnCuotas: 20000,
-    capacidadDePagoTotal: 100000
-}
+
 
 const concesionaria = 
 
@@ -42,12 +37,21 @@ const concesionaria =
     {
         let aVender = this.autos.filter(function(detalle)
         {
-             return (detalle.vendido===false && detalle.km<=100 )
+             return (detalle.vendido===false)
       
         })
 
-            console.log(aVender)
+            return aVender
     },
+    autosNuevos:    function()
+    {
+       let nuevos=this.autosParaLaVenta().filter(function(recorrido)
+        {
+             return (recorrido.km<=100)
+      
+        })
+        return nuevos  
+    } ,
     listaDeVentas: function()
     {   
         let preciosVendidos=[]
@@ -65,35 +69,43 @@ const concesionaria =
     },
    totalDeVentas: function()
     { 
-        if(this.listaDeVentas()>0)
+        if(this.listaDeVentas()!=[])
         {
             
-            let totalvendidos=this.listaDeVentas().reduce((acumulador,elemento) =>
-        {
-          return acumulador+elemento
-           
-        }
-        )
-        return totalvendidos    } 
-       else 
-       {          
+            let totalvendidos=this.listaDeVentas().reduce((acumulador,elemento) => acumulador+elemento)
+            return totalvendidos    
+        } 
+        else 
+        {          
            return 0
-       }
+        }
     },
-    puedeComprar: function(persona, auto)
+    puedeComprar: function(auto, persona)
     {
-        
-    } 
+         return(persona.capacidadDePagoTotal >= auto.precio && persona.capacidadDePagoEnCuotas > (auto.precio / auto.cuotas));
+    }, 
+    autosQuePuedeComprar: function(persona1)
+    {   
+        let listaDeautos=[]
+        let autosparacomprar=this.autosParaLaVenta().forEach(element => {
+            if(this.puedeComprar(element,persona1)===true)
+        {   
+            listaDeautos.push(element)
+        }} )
+        return listaDeautos                
+    }
+
 
 };
+/*    nombre: "Juan",
+    capacidadDePagoEnCuotas: 20000,
+    capacidadDePagoTotal: 100000*/
+console.log(concesionaria.autosQuePuedeComprar({nombre: "Juan",
+    capacidadDePagoTotal: 100000,
+    capacidadDePagoEnCuotas: 20000}))
 
-
-
-//concesionaria.venderAuto("APL123")
+/*concesionaria.venderAuto("APL123")
 concesionaria.venderAuto("JJK116")
 console.log(concesionaria.listaDeVentas())
 console.log(concesionaria.totalDeVentas())
-
-
-
-       
+//console.log(concesionaria.autos)*/
